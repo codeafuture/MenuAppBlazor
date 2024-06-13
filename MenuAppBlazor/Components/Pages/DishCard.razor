@@ -1,0 +1,22 @@
+﻿@using MenuAppBlazor.Models;
+
+<div class="col-12 col-md-6 text-center">
+    <div>
+        <h4>@Dish.Name</h4>
+    </div>
+    <div>
+        <img alt="@Dish.Name" src="@Dish.ImageUrl" style="width:70%"/>
+    </div>
+    <div>
+        @Dish.Price.ToString("N2") Dollar
+    </div>
+    <div>
+        <a class="btn btn-info" href="@($"details/{@Dish.Id}")">View Dish</a>
+    </div>
+</div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public Dish Dish { get; set; } = default!;
+}

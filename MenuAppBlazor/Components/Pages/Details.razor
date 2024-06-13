@@ -1,0 +1,63 @@
+﻿@page "/details/{id:int}"
+@using MenuAppBlazor.Models
+@using Microsoft.EntityFrameworkCore
+@inject MenuAppBlazor.Data.MenuContext DB
+@inject NavigationManager NavigationManager
+
+<div>
+    @if(dish == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="container text-center">
+            <div>
+                <h4>@dish.Name</h4>
+            </div>
+            <div>
+                <img alt="@dish.Name" src="@dish.ImageUrl" style="width:50%" />
+            </div>
+            <div>
+                @dish.Price.ToString("N2") Dollar
+            </div>
+            <div>
+                Ingredients:
+                <ul style="list-style-type:none">
+                    @foreach(var item in @dish.DishIngredients)
+                    {
+                        <li>
+                            @item.Ingredient.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <a class="btn btn-info" href="@($"/")">Back to Menu</a>
+            </div>
+
+        </div>
+
+    }
+</div>
+
+
+@code {
+    Dish? dish;
+    [Parameter]
+    public int Id{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        dish = await DB.Dishes.Include(di =>di.DishIngredients)
+                               .ThenInclude(i => i.Ingredient)
+                               .FirstOrDefaultAsync(x => x.Id == Id);
+
+        if (dish == null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+
+}

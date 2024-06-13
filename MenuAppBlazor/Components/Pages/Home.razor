@@ -1,0 +1,36 @@
+﻿@page "/"
+@using MenuAppBlazor.Models
+@using Microsoft.EntityFrameworkCore
+@inject MenuAppBlazor.Data.MenuContext DB
+
+@attribute [StreamRendering]
+
+<PageTitle>Home</PageTitle>
+
+<div class="container">
+    <div class="row">
+        @if (dishes == null)
+        {
+            <p>Dishes are loading...</p>
+        }
+        else
+        {
+            @foreach (var dish in dishes)
+            {
+                <DishCard Dish="dish"></DishCard>
+            }
+        }
+    </div>
+
+</div>
+
+
+@code{
+    private List<Dish>? dishes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(2000);
+        dishes = await DB.Dishes.ToListAsync();
+    }
+}
